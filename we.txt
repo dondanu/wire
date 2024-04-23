@@ -1,0 +1,361 @@
+#!/bin/bash
+
+# File Operation
+FileOperationsMenu() {
+    echo "File Operations Menu"
+    echo "1) List files and directories with detailed info"
+    echo "2) Show hidden files as well"
+    echo "3) Display human-readable sizes of files"
+    echo "4) List all text files and .sh files in the current directory"
+    echo "5) Compress a specified folder excluding ‘.txt’ files"
+    echo "6) Go Back"
+
+    read -p "Enter your choice:" response
+    case $response in
+    "1") Listfilesanddirectories ;;
+    "2") Showhiddenfiles ;;
+    "3") Displayhumanreadable ;;
+    "4") Listalltextfilesand ;;
+    "5") Compressaspecifiedfolder ;;
+    *) ;;
+    esac
+}
+
+Listfilesanddirectories() {
+    ls -l
+}
+
+Showhiddenfiles() {
+    ls -al
+}
+
+Displayhumanreadable() {
+    ls -lh
+}
+
+Listalltextfilesand() {
+    ls *.txt *.sh
+}
+
+Compressaspecifiedfolder() {
+    read -p "Enter Destination Folder:" folder
+    read -p "Enter a Name for Compress file: " filename
+
+    if [[ -d $folder ]]; then
+        tar -czvf "$filename.tar.gz" --exclude="*.txt" "$folder"
+        echo "File Compressed"
+    else
+        echo "Error"
+    fi
+}
+
+# File Manipulation
+FileManipulation() {
+    echo "File Manipulation Menu"
+    echo
+    echo "1. Copy and Pasting"
+    echo "2. Renaming"
+    echo "3. Move all text files named temp"
+    echo "4. Delete files"
+    echo "5. Concatenate and merge"
+    echo "6. Exit"
+
+    read -p "Enter your choice:" response
+    case $response in
+    "1") copyandpaste ;;
+    "2") renamefile ;;
+    "3") movefiles ;;
+    "4") deletefiles ;;
+    "5") concatenateandmerge ;;
+    *) ;;
+    esac
+}
+
+copyandpaste() {
+    read -p "Enter File: " source
+    read -p "Enter Destination path:" destination
+
+    if [[ -f $destination ]]; then
+        read -p "File already exists. Do you wish to Overwrite (y/n): " response
+        case $response in
+        "y") echo "File Overwritten" ;;
+        "n") echo "File Overwrite Failed" ;;
+        *) ;;
+        esac
+    else
+        cp -r "$source" "$destination"
+
+        if [[ -f $destination ]]; then
+            echo "File Copied"
+        else
+            echo "File Not copied"
+        fi
+    fi
+}
+
+renamefile() {
+    read -p "Enter source path: " source
+    read -p "Enter New File Name: " file
+
+    if [[ -e $source ]]; then
+        mv "$source" "$file"
+        echo "File Renamed"
+    else
+        echo "Rename failed"
+    fi
+}
+
+movefiles() {
+    read -p "Enter source directory path: " source
+    read -p "Enter destination directory path: " destination
+
+    if [[ -d $source ]]; then
+        mv "$source"/temp.txt "$destination"
+        echo "Files Moved"
+    else
+        echo "Directory not found"
+    fi
+}
+
+deletefiles() {
+    read -p "Enter source path:" file
+
+    if [[ -f "$file" ]]; then
+        read -p "Confirm if you want to delete file (y/n): " confirm
+        if [[ "$confirm" == "y" ]]; then
+            rm "$file"
+            echo "File Deleted"
+        else
+            echo "File deletion aborted"
+        fi
+    else
+        echo "File not found"
+    fi
+}
+
+concatenateandmerge() {
+    read -p "Enter File1 Path:" file1
+    read -p "Enter File2 Path:" file2
+
+    if [[ -f $file1 && -f $file2 ]]; then
+        cat "$file1" "$file2" >>"merge.txt"
+        echo "Merge Successful"
+    else
+        echo "Merge Failed"
+    fi
+}
+
+#File COntent Viewing 
+
+FileContentViewing(){
+
+	echo "File Content Viewing Menu"
+	echo
+	echo "1. View 10 lines"
+	echo "2. View 1 MB contents"
+	echo "3. View last 20 lines"
+	echo "4. Append"
+	echo "5. Search"
+
+	read -p "Enter Your Option:" response
+
+	case response in
+		"1") view10line;;
+		"2") view1mbcontent;;
+		"3") viewinglast20line;;
+		"4") Append;;
+		"5") Search;;
+		   *);;
+	esac
+
+}
+
+view10line(){
+	read -p "Enter File: " file
+
+	head -n 10 $file 
+}
+
+view1mbcontent(){
+	read -p "Enter File: " file
+
+	head -c 1M $file
+}
+
+viewinglast20line(){
+	read -p "Enter File: " file
+
+	tail -n 20 $file
+}
+
+Append(){
+	read -p "Enter File: " file
+	read -p "Enter Line: " line
+
+	echo "$line" >> "$file"
+}
+
+Search(){
+	read -p "Enter File: " file
+	read -p "Enter Word: " word
+
+	grep -n "$word" "$file" 
+}
+
+#System Info and file permision
+SystemInfoandFilepermission(){
+	echo "System Info Menu"
+	echo
+	echo "1. Show Matchin Hardware Name"
+	echo "2. Display OS name"
+	echo "3. Display Disk space"
+	echo "4. Set the Raed and Write Permision"
+	echo "5. Remove Reda and Write Permision"
+
+	read -p "Enter Your Option:" response
+
+	case $response in
+		"1") lshw;;
+		"2") uname -o;;
+		"3") df -h;;
+		"4") chmod u -rw g -r o -r;;
+		"5") chmod -R o-rwx;;
+		  *);;
+	esac
+}
+
+
+# Main Menu
+MainMenu() {
+    echo "Main Menu"
+    echo
+    echo "1. File Operations"
+    echo "2. File Manipulation"
+    echo "3. File Content Viewing"
+    echo "4. System Info and File permission"
+    echo "5. Exit"
+
+    read -p "Enter your choice:" response
+    case $response in
+    "1") FileOperationsMenu ;;
+    "2") FileManipulation ;;
+    "3") FileContentViewing ;;
+    "4") SystemInfoandFilepermission ;;
+    *) ;;
+    esac
+}
+
+MainMenu
+-----------------------------------------------
+#!/bin/bash
+
+# Function to check if a number is prime
+is_prime() {
+    local num=$1
+    if [ $num -le 1 ]; then
+        return 1
+    fi
+    for (( i=2; i*i<=num; i++ )); do
+        if [ $((num % i)) -eq 0 ]; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+# Function to calculate sum of prime numbers up to a given limit
+sum_of_primes() {
+    local limit=$1
+    local sum=0
+    for (( num=2; num<=limit; num++ )); do
+        if is_prime $num; then
+            sum=$((sum + num))
+        fi
+    done
+    echo $sum
+}
+
+# Calculate and display the sum of prime numbers up to 100
+result=$(sum_of_primes 100)
+echo "The sum of prime numbers up to 100 is: $result"
+
+
+
+----------------------------------------------
+
+#!/bin/bash
+
+# Function to check if a number is divisible by 3
+is_divisible_by_3() {
+    local num=$1
+    if [ $((num % 3)) -eq 0 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Function to check if a number is divisible by 5
+is_divisible_by_5() {
+    local num=$1
+    if [ $((num % 5)) -eq 0 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+echo "Numbers divisible by 3:"
+for (( num=1; num<=100; num++ )); do
+    if is_divisible_by_3 $num; then
+        echo $num
+    fi
+done
+
+echo "Numbers divisible by 5:"
+for (( num=1; num<=100; num++ )); do
+    if is_divisible_by_5 $num; then
+        echo $num
+    fi
+done
+
+echo "Numbers divisible by both 3 and 5:"
+for (( num=1; num<=100; num++ )); do
+    if is_divisible_by_3 $num && is_divisible_by_5 $num; then
+        echo $num
+    fi
+done
+
+
+
+----------------------------------------
+
+#!/bin/bash
+
+echo "ASCII values of characters from A to z:"
+for (( ascii=65; ascii<=122; ascii++ )); do
+    printf "%c - %d\n" $ascii $ascii
+done
+
+
+-----------------------------
+#!/bin/bash
+
+# Function to convert seconds to hours, minutes, and seconds
+convert_seconds() {
+
+    let seconds=$1
+    let hours=$(( seconds / 3600 ))
+    let remaining_seconds=$(( seconds % 3600 ))
+    let minutes=$(( remaining_seconds / 60 ))
+    let seconds=$(( remaining_seconds % 60 ))
+
+    echo "$hours hours, $minutes minutes, and $seconds seconds"
+}
+
+# Example usage: Convert 3661 seconds to hours, minutes, and seconds
+input_seconds=36610
+converted_time=$(convert_seconds $input_seconds)
+echo "$input_seconds seconds is equal to $converted_time"
+
+
